@@ -15,6 +15,7 @@ loglevel 3
     export EXTERNAL_STORAGE /sdcard
     export BOOTCLASSPATH /system/framework/core.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar
     export TMPDIR /data/local/tmp
+    export TERMINFO /system/etc/terminfo
 
 
 # Backward compatibility
@@ -512,10 +513,10 @@ on boot
 service console /system/bin/sh
     console
 
-service playlogos1 /system/bin/playlogos1
-    user root
+#service playlogos1 /system/bin/playlogos1
+#    user root
 #	disabled
-    oneshot
+#    oneshot
 
 # adbd is controlled by the persist.service.adb.enable system property
 service adbd /sbin/adbd
@@ -592,11 +593,11 @@ service media /system/bin/mediaserver
 #    group audio
 #    oneshot
 
-#service bootanim /system/bin/bootanimation2nd
-#    user graphics
-#    group graphics
-#    disabled
-#    oneshot
+service bootanim /system/bin/bootanimation2nd
+    user graphics
+    group graphics
+    disabled
+    oneshot
 	
 # to enable wifi
 service wpa_supplicant /system/bin/wpa_supplicant -Dwext -ieth0 -c/data/wifi/bcm_supp.conf
