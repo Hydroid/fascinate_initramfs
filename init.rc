@@ -6,7 +6,7 @@ sysclktz 0
 loglevel 3
 
 # setup the global environment
-    export PATH /sbin:/system/sbin:/system/bin:/system/xbin
+    export PATH /system/xbin:/sbin:/system/sbin:/system/bin
     export LD_LIBRARY_PATH /system/lib:/system/lib/egl
     export ANDROID_BOOTLOGO 1
     export ANDROID_ROOT /system
@@ -510,7 +510,7 @@ on boot
 
 ## Daemon processes to be run by init.
 ##
-service console /system/bin/sh
+service console /system/xbin/bash
     console
 
 #service playlogos1 /system/bin/playlogos1
