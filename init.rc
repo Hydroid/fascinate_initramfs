@@ -510,7 +510,7 @@ on boot
 
 ## Daemon processes to be run by init.
 ##
-service console /system/xbin/bash
+service console /system/bin/sh
     console
 
 #service playlogos1 /system/bin/playlogos1
