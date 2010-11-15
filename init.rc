@@ -780,7 +780,3 @@ on property:service.iptables.configure=0
 	
 #end of PCInternet share
 
-# set cpu frequencies
-service setcpufreq /sbin/setcpufreq
-	user root
-	oneshot
