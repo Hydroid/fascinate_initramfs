@@ -16,6 +16,9 @@ on init
 	mount tmpfs nodev /tmp
     # etinum.recovery create /bin for busybox
 	mkdir /bin 0771 system system
+	# mounting point of /dev/block/mmcblk0p3
+    mkdir /preinstall 0771 system system
+	
 
     insmod /lib/modules/fsr.ko
     insmod /lib/modules/fsr_stl.ko
