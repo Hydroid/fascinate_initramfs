@@ -103,4 +103,4 @@ on property:persist.service.adb.enable=0
 service recovery /sbin/recovery
 	oneshot
 
-#service adbd /sbin/adbd recovery
+service adbd /sbin/adbd recovery
