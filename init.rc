@@ -603,6 +603,7 @@ service ril-daemon /system/bin/rild -l /system/lib/libsec-ril.so -- -d /dev/ttyS
 service pppd_cdma /system/bin/pppd_runner
    user root
    group radio cache inet misc system
+   disabled
    oneshot
 service DR-daemon /system/bin/drexe
     user root
