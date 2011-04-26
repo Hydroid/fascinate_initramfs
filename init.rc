@@ -196,13 +196,11 @@ loglevel 3
 	chown system system /cache/recovery
 	chmod 0770 /cache/recovery
 
-	#change permissions on vmallocinfo so we can grab it from bugreports
+	# change permissions on vmallocinfo so we can grab it from bugreports
 	chown root log /proc/vmallocinfo
 	chmod 0440 /proc/vmallocinfo
 	
 	mount rfs /dev/block/stl3 /efs nosuid nodev check=no
-	#removed by khoonk for parameter reading on 20100321
-	#removed by khoonk for parameter reading on 20100321
 
 	chown radio radio /efs
 	chmod 0771 /efs
@@ -284,7 +282,7 @@ loglevel 3
 	chmod 0662 /dev/log/radio
 	chmod 0662 /dev/log/main
 		
-		# create dump camera
+	# create dump camera
 	mkdir /data/dump  0777 root root 
 	chmod 0777 /data/dump
 
@@ -308,11 +306,11 @@ loglevel 3
 	# Vova: permissions for enable MTP node
 	chmod 0777 /dev/usb_mtp_enable 
 
-	#DRM directory creation
+	# DRM directory creation
 	mkdir /system/etc/security/drm 0777
 	chown root root /system/etc/security/drm
 	chmod 0777 /system/etc/security/drm
-	#Permission for WMDRM sample.hds file
+	# Permission for WMDRM sample.hds file
 	chmod 0777  /system/etc/security/drm/sample.hds
 	# Added for testing WMDRM and DIVX DRM
 	mkdir /data/data/.drm/ 0777
@@ -440,30 +438,30 @@ on boot
 	chmod 0777 /sys/class/recovery/recovery/wipedata
 
 # FOTA
-	chmod 0777 /system/etc/install-recovery.sh
+#	chmod 0777 /system/etc/install-recovery.sh
 
 # for Sensor HAL
 
-    chown system system /dev/accelerometer
-    chown system system /dev/akm8973_daemon
-    chown system system /dev/akm8973_aot
-#   chown system system /dev/bma020
-#   chown system system /dev/proximity
+	chown system system /dev/accelerometer
+	chown system system /dev/akm8973_daemon
+	chown system system /dev/akm8973_aot
+#	chown system system /dev/bma020
+	chown system system /dev/proximity
 	chown system system /dev/light
-#   chmod 0777 /dev/accelerometer
-    chmod 0777 /dev/akm8973_daemon
-    chmod 0777 /dev/akm8973_aot
-#   chmod 0777 /dev/bma020
-#   chmod 0777 /dev/proximity
-#   chmod 0660 /dev/light
+#	chmod 0777 /dev/accelerometer
+	chmod 0777 /dev/akm8973_daemon
+	chmod 0777 /dev/akm8973_aot
+#	chmod 0777 /dev/bma020
+	chmod 0777 /dev/proximity
+	chmod 0660 /dev/light
 
-#magnetic sensor yamaha
-#   chown system system /dev/bma020
-    chmod 0777 /dev/akm8973_daemon
-    chmod 0777 /dev/akm8973_aot
-#   chmod 0777 /dev/bma020
+# magnetic sensor yamaha
+#	chown system system /dev/bma020
+	chmod 0777 /dev/akm8973_daemon
+	chmod 0777 /dev/akm8973_aot
+#	chmod 0777 /dev/bma020
 
-#hwcodec tuning ( rakesh.gohel@samsung.com )
+# hwcodec tuning ( rakesh.gohel@samsung.com )
 	chmod 660 /dev/i2c-4
 
 	chmod 0777 /system/etc/audio/eqfilter.txt
@@ -474,11 +472,11 @@ on boot
 	chmod 0777 /system/etc/audio/stream_earpiece.txt
 	chmod 0777 /system/etc/audio/srstunning.txt
 
-#Sec_Feature_Android sw81.jang
+# Sec_Feature_Android sw81.jang
 	setprop	audioflinger.a2dpcall 0
 
 # Define TCP buffer sizes for various networks
-#	ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
+# ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
 	setprop net.tcp.buffersize.default	4096,87380,110208,4096,16384,110208
 	setprop net.tcp.buffersize.wifi		4095,65535,196608,4096,16384,110208
 	setprop net.tcp.buffersize.umts		4094,87380,110208,4096,16384,110208
@@ -487,7 +485,7 @@ on boot
 
 # +++++++++++++++++++++++++++++++++++++++++++
 
-#Define modem related settings
+# Define modem related settings
 	setprop ro.radio.use-ppp yes
 # for Bluetooth
 	chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
@@ -554,7 +552,7 @@ service servicemanager /system/bin/servicemanager
 	critical
 	onrestart restart zygote
 	onrestart restart media
-#magnetic sensor yamaha
+# magnetic sensor yamaha
 	onrestart restart sensor-daemon
 
 service vold /system/bin/vold
@@ -600,17 +598,17 @@ service media /system/bin/mediaserver
 	user media
 	group system audio camera graphics inet net_bt net_bt_admin
 	
-#to prevent lockup issue during poweron/off test
+# to prevent lockup issue during poweron/off test
 service killmediaserver /system/bin/killmediaserver
 	user media
 	group system
 	oneshot
-#to prevent lockup issue during poweron/off test
+# to prevent lockup issue during poweron/off test
 
 #service bootsound /system/bin/playmp3
-#    user media
-#    group audio
-#    oneshot
+#	user media
+#	group audio
+#	oneshot
 
 service bootanim /system/bin/bootanimation
 	user graphics
@@ -635,7 +633,7 @@ service ifcfg_eth0 /system/bin/ifconfig eth0 up
 	disabled
 	oneshot
 
-#for WiFi MFG(TestMode)
+# for WiFi MFG(TestMode)
 service mfgloader /system/bin/mfgloader
 	disabled
 	oneshot
@@ -707,7 +705,7 @@ service pbap /system/bin/sdptool add --channel=19 PBAP
 service installd /system/bin/installd
 	socket installd stream 600 system system
 
-#magnetic sensor yamaha
+# magnetic sensor yamaha
 	service sensor-daemon /system/bin/sensorserver_yamaha
 	user compass
 	group system log
@@ -765,18 +763,18 @@ service tvout /system/bin/tvoutserver
 	user system
 	group system
 
-#PC Internet Share
+# PC Internet Share
 
 service udhcpd /system/bin/udhcpd /data/data/com.android.samsung.IcsService/dhcp/udhcpd.conf
 	disabled
 	oneshot
 
-#configure the Iptables
+# configure the Iptables
 service pcInternet_on /system/bin/sh /data/data/com.android.samsung.IcsService/conf/iptablesConfig.sh
 	disabled
 	oneshot
 		 
-#flush the Iptables
+# flush the Iptables
 service pcInternet_off /system/bin/sh /data/data/com.android.samsung.IcsService/conf/iptablesFlush.sh
 	disabled
 	oneshot
