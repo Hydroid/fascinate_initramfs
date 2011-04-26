@@ -448,12 +448,12 @@ on boot
 #	chown system system /dev/bma020
 	chown system system /dev/proximity
 	chown system system /dev/light
-#	chmod 0777 /dev/accelerometer
+	chmod 0777 /dev/accelerometer
 	chmod 0777 /dev/akm8973_daemon
 	chmod 0777 /dev/akm8973_aot
 #	chmod 0777 /dev/bma020
 	chmod 0777 /dev/proximity
-	chmod 0660 /dev/light
+	chmod 0777 /dev/light
 
 # magnetic sensor yamaha
 #	chown system system /dev/bma020
