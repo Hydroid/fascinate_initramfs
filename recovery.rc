@@ -64,10 +64,12 @@ loglevel 3
 
 # mount system partitions
 	mount rfs /dev/block/stl9 /system check=no
+	mount ext4 /dev/block/stl9 /system wait noatime nosuid nodev
 
 ###################################################################
 
 	mount rfs /dev/block/stl11 /cache nosuid nodev check=no
+	mount ext4 /dev/block/stl11 /cache wait noatime nosuid nodev
 	chown system cache /cache
 	chmod 0770 /cache
 
