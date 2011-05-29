@@ -5,7 +5,7 @@ sysclktz 0
 loglevel 3
 
 # setup the global environment
-	export PATH /sbin:/system/sbin:/system/bin:/system/xbin
+	export PATH /bin:/sbin:/system/sbin:/system/bin:/system/xbin
 	export LD_LIBRARY_PATH /system/lib:/system/lib/egl
 	export ANDROID_BOOTLOGO 1
 	export ANDROID_ROOT /system
@@ -27,14 +27,12 @@ loglevel 3
 	mkdir /acct
 	mount cgroup none /acct cpuacct
 	mkdir /acct/uid
-	
 	mount tmpfs nodev /tmp
+
 	insmod /lib/modules/fsr.ko
 	insmod /lib/modules/fsr_stl.ko
 	insmod /lib/modules/rfs_glue.ko
 	insmod /lib/modules/rfs_fat.ko
-	insmod /lib/modules/jbd2.ko
-	insmod /lib/modules/ext4.ko
 
 # parameter block
 	mkdir /mnt/.lfs 0755 root root
@@ -57,31 +55,36 @@ loglevel 3
 	mkdir /config 0500 root root
 	chown system cache /cache
 	chmod 0770 /cache
-	mkdir /data/fota 0771 system system	
-	mkdir /preinstall 0771 system system	
+	mkdir /data/fota 0771 system system
+	mkdir /preinstall 0771 system system
 
-	# This may have been created by the recovery system with odd permissions
+# This may have been created by the recovery system with odd permissions
 	chown system system /cache/recovery
 	chmod 0770 /cache/recovery
 
+# mount system partitions
+	mount rfs /dev/block/stl9 /system check=no
+
+###################################################################
+
 	mount rfs /dev/block/stl11 /cache nosuid nodev check=no
-	mount ext4 /dev/block/stl11 /cache wait noatime nosuid nodev
 	chown system cache /cache
 	chmod 0770 /cache
 
-	# This may have been created by the recovery system with odd permissions
+# This may have been created by the recovery system with odd permissions
 	chown system system /cache/recovery
 	chmod 0770 /cache/recovery
 
 on boot
-
 	ifup lo
 	hostname localhost
 	domainname localdomain
 	class_start default
 
+## Daemon processes to be run by init.
+##
 # adbd is controlled by the persist.service.adb.enable system property
-service adbd /sbin/adbd 
+service adbd /sbin/adbd
 	disabled
 
 on property:persist.service.adb.enable=1
@@ -92,5 +95,3 @@ on property:persist.service.adb.enable=0
 
 service recovery /sbin/start_recovery
 	oneshot
-
-service adbd /sbin/adbd recovery

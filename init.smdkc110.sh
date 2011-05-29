@@ -8,6 +8,6 @@ netcfg eth0 dhcp
 # disable boot animation for a faster boot sequence when needed
 boot_anim=`getprop ro.kernel.android.bootanim`
 case "$boot_anim" in
-    0)  setprop debug.sf.nobootanimation 1
-    ;;
+	0)  setprop debug.sf.nobootanimation 1
+	;;
 esac
