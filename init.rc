@@ -328,9 +328,13 @@ loglevel 3
 	insmod /lib/modules/s3c_bc.ko
 
 # load FM Radio module
-#	insmod /lib/modules/Si4709_driver.ko
+	insmod /lib/modules/Si4709_driver.ko
 	insmod /lib/modules/vibrator.ko
 	insmod /lib/modules/melfas_touchkey.ko
+
+# load tun vpn and cifs modules
+	insmod /lib/modules/tun.ko
+	insmod /lib/modules/cifs.ko
 
 on boot
 # basic network init
