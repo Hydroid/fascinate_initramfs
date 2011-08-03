@@ -27,20 +27,20 @@ loglevel 3
 	mkdir /acct
 	mount cgroup none /acct cpuacct
 	mkdir /acct/uid
-
 	mount tmpfs nodev /tmp
+
 	insmod /lib/modules/fsr.ko
 	insmod /lib/modules/fsr_stl.ko
 	insmod /lib/modules/rfs_glue.ko
 	insmod /lib/modules/rfs_fat.ko
-
-# parameter block
-	mkdir /mnt/.lfs 0755 root root
 	insmod /lib/modules/j4fs.ko
-	mount j4fs /dev/block/stl6 /mnt/.lfs
 	insmod /lib/modules/dpram_recovery.ko
 	insmod /lib/modules/param.ko
 	insmod /lib/modules/drop_caches.ko
+
+# parameter block
+	mkdir /mnt/.lfs 0755 root root
+	mount j4fs /dev/block/stl6 /mnt/.lfs
 
 # create mountpoints and mount tmpfs on sqlite_stmt_journals
 	mkdir /sdcard 0000 system system
@@ -58,15 +58,10 @@ loglevel 3
 	mkdir /data/fota 0771 system system
 	mkdir /preinstall 0771 system system
 
-# This may have been created by the recovery system with odd permissions
-	chown system system /cache/recovery
-	chmod 0770 /cache/recovery
-
 # mount system partitions
 	mount rfs /dev/block/stl9 /system check=no
 
 ###################################################################
-
 	mount rfs /dev/block/stl11 /cache nosuid nodev check=no
 	chown system cache /cache
 	chmod 0770 /cache
@@ -81,8 +76,6 @@ on boot
 	domainname localdomain
 	class_start default
 
-## Daemon processes to be run by init.
-##
 # adbd is controlled by the persist.service.adb.enable system property
 service adbd /sbin/adbd
 	disabled

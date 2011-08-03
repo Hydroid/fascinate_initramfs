@@ -471,6 +471,7 @@ ext4_format()
 	tune2fs -c 100 -i 100d -m 0 -L $resource $partition
 }
 
+
 copy_system_in_ram()
 {
 	if ! test -d /system_in_ram; then

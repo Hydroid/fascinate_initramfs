@@ -5,7 +5,7 @@ sysclktz 0
 loglevel 3
 
 # setup the global environment
-	export PATH /bin:/sbin:/system/sbin:/system/bin:/system/xbin
+	export PATH /sbin:/system/sbin:/system/bin:/system/xbin
 	export LD_LIBRARY_PATH /system/lib:/system/lib/egl
 	export ANDROID_BOOTLOGO 1
 	export ANDROID_ROOT /system
@@ -27,20 +27,22 @@ loglevel 3
 	mkdir /acct
 	mount cgroup none /acct cpuacct
 	mkdir /acct/uid
-	mount tmpfs nodev /tmp
 
+	mount tmpfs nodev /tmp
 	insmod /lib/modules/fsr.ko
 	insmod /lib/modules/fsr_stl.ko
 	insmod /lib/modules/rfs_glue.ko
 	insmod /lib/modules/rfs_fat.ko
-
-# parameter block
-	mkdir /mnt/.lfs 0755 root root
-	insmod /lib/modules/j4fs.ko
-	mount j4fs /dev/block/stl6 /mnt/.lfs
+	insmod /lib/modules/ext4.ko
+	insmod /lib/modules/jbd2.ko
 	insmod /lib/modules/dpram_recovery.ko
 	insmod /lib/modules/param.ko
 	insmod /lib/modules/drop_caches.ko
+	insmod /lib/modules/j4fs.ko
+
+# parameter block
+	mkdir /mnt/.lfs 0755 root root
+	mount j4fs /dev/block/stl6 /mnt/.lfs
 
 # create mountpoints and mount tmpfs on sqlite_stmt_journals
 	mkdir /sdcard 0000 system system
@@ -70,6 +72,7 @@ loglevel 3
 
 	mount rfs /dev/block/stl11 /cache nosuid nodev check=no
 	mount ext4 /dev/block/stl11 /cache wait noatime nosuid nodev
+
 	chown system cache /cache
 	chmod 0770 /cache
 
@@ -85,8 +88,11 @@ on boot
 
 ## Daemon processes to be run by init.
 ##
+
+
+
 # adbd is controlled by the persist.service.adb.enable system property
-service adbd /voodoo/scripts/adbd_wrapper.sh
+service adbd /voodoo/scripts/adbd_wrapper.sh 
 	disabled
 
 on property:persist.service.adb.enable=1
