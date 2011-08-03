@@ -5,7 +5,7 @@ sysclktz 0
 loglevel 3
 
 # setup the global environment
-	export PATH /bin:/sbin:/system/sbin:/system/bin:/system/xbin
+	export PATH /sbin:/system/sbin:/system/bin:/system/xbin
 	export LD_LIBRARY_PATH /system/lib:/system/lib/egl
 	export ANDROID_BOOTLOGO 1
 	export ANDROID_ROOT /system
@@ -20,10 +20,9 @@ loglevel 3
 	symlink /system/etc /etc
 
 # to enable wifi
-	 setprop wifi.interface "eth0"
+	setprop wifi.interface "eth0"
 # end of wifi
 
-# +++++++++++++++++++++++++++++++++++++++++++
 # bootsnd
 	setprop audioflinger.bootsnd 1
 # end of bootsnd
@@ -35,20 +34,25 @@ loglevel 3
 	insmod /lib/modules/rfs_glue.ko
 	insmod /lib/modules/rfs_fat.ko
 	insmod /lib/modules/j4fs.ko
-	#added by khoonk for parameter reading on 20100321
-	mount j4fs /dev/block/stl6 /mnt/.lfs
-	#added by khoonk for parameter reading on 20100321
 	insmod /lib/modules/param.ko
 	insmod /lib/modules/dpram.ko
 	insmod /lib/modules/multipdp.ko
 	insmod /lib/modules/drop_caches.ko
 	insmod /lib/modules/hotspot_event_monitoring.ko
+	insmod /lib/modules/pvrsrvkm.ko
+	insmod /lib/modules/s3c_lcd.ko
+	insmod /lib/modules/s3c_bc.ko
+	insmod /lib/modules/vibrator.ko
+	insmod /lib/modules/melfas_touchkey.ko
+	insmod /lib/modules/Si4709_driver.ko
+	insmod /lib/modules/tun.ko
+	insmod /lib/modules/cifs.ko
+
+	mount j4fs /dev/block/stl6 /mnt/.lfs
 
 # create mountpoints and mount tmpfs on sqlite_stmt_journals
 	mkdir /mnt 0775 root system
 	mkdir /mnt/sdcard 0000 system system
-#	chown system system /sdcard
-#	chmod 0000 /sdcard
 
 # Backwards Compat - XXX: Going away in G*
 	symlink /mnt/sdcard /sdcard
@@ -115,18 +119,15 @@ loglevel 3
 	write /dev/cpuctl/bg_non_interactive/cpu.shares 52
 
 # mount mtd partitions
-	mount rfs /dev/block/stl9 /system check=no
+	mount rfs /dev/block/stl9 /system ro check=no
 	mount ext4 /dev/block/stl9 /system wait noatime nosuid nodev
 
 ###################################################################
 # create SEC_INTERNAL_STORAGE 1/3
-	mount rfs /dev/block/mmcblk0p1 /data nosuid nodev noauto_da_alloc check=no
+	mount rfs /dev/block/mmcblk0p1 /data nosuid nodev check=no
 	mount ext4 /dev/block/mmcblk0p1 /data wait noatime nosuid nodev
 	chown system system /data
 	chmod 0771 /data
-
-###################################################################
-
 ###################################################################
 # create dbdata partition
 	mkdir /dbdata
@@ -144,31 +145,23 @@ loglevel 3
 	chown system system /dbdata/db-journal
 	chmod 0777 /dbdata/db-journal
 ###################################################################
-
 	mkdir /data/fota 0771 system system
 	chown system system /data/fota
 	chmod 0771 /data/fota
-
-# Thomas Ryu, fota partition
 ###################################################################
 # create SEC_INTERNAL_STORAGE 2/3
 	mount rfs /dev/block/mmcblk0p2 /data/fota nosuid nodev check=no
 	chown system system /data/fota
 	chmod 0771 /data/fota
-
 ###################################################################
-
 	mkdir /preinstall 0771 system system
 	chown system system /preinstall
 	chmod 0771 /preinstall
-
-# Thomas Ryu, fota partition
 ###################################################################
 # create SEC_INTERNAL_STORAGE 3/3
 	mount rfs /dev/block/mmcblk0p3 /preinstall nosuid nodev check=no
 	chown system system /preinstall
 	chmod 0771 /preinstall
-
 ###################################################################
 
 # Same reason as /data above
@@ -192,12 +185,11 @@ loglevel 3
 	chown system system /cache/recovery
 	chmod 0770 /cache/recovery
 
-# change permissions on vmallocinfo so we can grab it from bugreports
+#change permissions on vmallocinfo so we can grab it from bugreports
 	chown root log /proc/vmallocinfo
 	chmod 0440 /proc/vmallocinfo
-	mount rfs /dev/block/stl3 /efs nosuid nodev check=no
 
-#	chown system system /efs
+	mount rfs /dev/block/stl3 /efs nosuid nodev check=no
 	chown radio radio /efs
 	chmod 0771 /efs
 
@@ -233,7 +225,6 @@ loglevel 3
 	chown radio radio /data/misc/radio
 	chmod 0771 /data/misc/radio
 
-# give system access to wpa_supplicant.conf for backup and restore
 # to enable wifi
 	mkdir /data/wifi 0777 wifi wifi
 	chown wifi wifi /data/wifi
@@ -315,30 +306,15 @@ loglevel 3
 	mkdir /data/data/.drm/ 0777
 	mkdir /data/data/.drm/.wmdrm 0777
 	mkdir /data/data/.drm/.divxdrm 0777
-#	mkdir /efs/.android 0777
 
 # Permission for WMDRM sample.hds file
 	chmod 0777 /data/data/.drm/.wmdrm/sample.hds
- 
+
 # Added for path change for generated certificates adn hds file for playready.
 	mkdir /data/data/.drm/.playready 0777
 
 # video play for m.youtube.com
 	 mkdir /data/data/.youtube 0777
-
-# ko files for 3D
-	insmod /lib/modules/pvrsrvkm.ko
-	insmod /lib/modules/s3c_lcd.ko
-	insmod /lib/modules/s3c_bc.ko
-
-# load FM Radio module
-	insmod /lib/modules/Si4709_driver.ko
-	insmod /lib/modules/vibrator.ko
-	insmod /lib/modules/melfas_touchkey.ko
-
-# load tun vpn and cifs modules
-	insmod /lib/modules/tun.ko
-	insmod /lib/modules/cifs.ko
 
 on boot
 # basic network init
@@ -371,8 +347,8 @@ on boot
 	setprop ro.BACKUP_APP_MEM 6144
 	setprop ro.HOME_APP_MEM 6144
 	setprop ro.HIDDEN_APP_MEM 10240
-	setprop ro.CONTENT_PROVIDER_MEM 11264
-	setprop ro.EMPTY_APP_MEM 12288
+	setprop ro.CONTENT_PROVIDER_MEM 12800
+	setprop ro.EMPTY_APP_MEM 19200
 
 # Write value must be consistent with the above properties.
 # Note that the driver only supports 6 slots, so we have HOME_APP at the
@@ -380,13 +356,15 @@ on boot
 	write /sys/module/lowmemorykiller/parameters/adj 0,1,2,7,14,15
 	write /proc/sys/vm/overcommit_memory 1
 	write /proc/sys/vm/min_free_order_shift 4
-	write /sys/module/lowmemorykiller/parameters/minfree 2560,4096,6144,10240,11264,12288
+	write /sys/module/lowmemorykiller/parameters/minfree 2560,4096,6144,10240,12800,19200
 
 # Set init its forked children's oom_adj.
 	write /proc/1/oom_adj -16
 
-# permissions 
+# SDCard Speed Tweak
+	write /sys/block/mmcblk0/bdi/read_ahead_kb 4096
 
+# permissions 
 	chmod 666 /system/usr/keychars/s3c-keypad.kcm.bin
 
 # Permissions for System Server and daemons.
@@ -433,25 +411,24 @@ on boot
 	chmod 0777 /sys/class/recovery/recovery/wipedata
 
 # for Sensor HAL
-
 	chown system system /dev/accelerometer
 	chown system system /dev/akm8973_daemon
 	chown system system /dev/akm8973_aot
-#	chown system system /dev/bma020
+	chown system system /dev/bma020
 	chown system system /dev/proximity
 	chown system system /dev/light
 	chmod 0777 /dev/accelerometer
 	chmod 0777 /dev/akm8973_daemon
 	chmod 0777 /dev/akm8973_aot
-#	chmod 0777 /dev/bma020
+	chmod 0777 /dev/bma020
 	chmod 0777 /dev/proximity
 	chmod 0660 /dev/light
 
 # magnetic sensor yamaha
-#	chown system system /dev/bma020
+	chown system system /dev/bma020
 	chmod 0777 /dev/akm8973_daemon
 	chmod 0777 /dev/akm8973_aot
-#	chmod 0777 /dev/bma020
+	chmod 0777 /dev/bma020
 
 # hwcodec tuning ( rakesh.gohel@samsung.com )
 	chmod 660 /dev/i2c-4
@@ -474,54 +451,52 @@ on boot
 	setprop net.tcp.buffersize.edge 4093,26280,35040,4096,16384,35040
 	setprop net.tcp.buffersize.gprs 4092,8760,11680,4096,8760,11680
 
-# +++++++++++++++++++++++++++++++++++++++++++
-
 # Define modem related settings
 	setprop ro.radio.use-ppp yes
+
 # for Bluetooth
 	chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
 	chown bluetooth bluetooth /proc/bluetooth/sleep/proto
 	chown system system /sys/module/sco/parameters/disable_esco
 	chmod 0660 /sys/module/bluetooth_power/parameters/power
 	chmod 0660 /proc/bluetooth/sleep/proto
-
 	chown bluetooth bluetooth /dev/uinput
 	chmod 0660 /dev/uinput
-
 	chown bluetooth bluetooth /dev/s3c2410_serial0
 	chmod 0660 /dev/s3c2410_serial0
 	chmod 0777 /sys/class/rfkill/rfkill0/state
 	chmod 0777 /sys/class/rfkill/rfkill1/state
 	chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
 	chown bluetooth bluetooth /sys/class/rfkill/rfkill1/state
-
 	chmod 6777 /system/bin/brcm_dutMode
-# [ATLAS] start Modify STA disconnect event detect method (polling -> event) by jkjeon
 	chown system system /system/bin/softap_event
 	chmod 4775 /system/bin/softap_event
-# [ATLAS] end Modify STA disconnect event detect method (polling -> event) by jkjeon
 
 # +++++++++++++++++++++++++++++++++++++++++++
 # for datarouter
 	chown system system /dev/ttygs0
 	chown system system /dev/dun
-
 # +++++++++++++++++++++++++++++++++++++++++++
 
 	class_start default
 
 ## Daemon processes to be run by init.
-##
 service console /system/bin/sh
 	user shell
 	group shell system log
 	console
 
-# Root device automatically on boot
+service bootanim /system/bin/bootanimation
+	user graphics
+	group graphics
+	disabled
+	oneshot
+
+# Root the phone on boot
 service install_root /sbin/install_root
 	oneshot
 
-# enable init.d support
+# init.d support
 service run_parts /system/xbin/run-parts /system/etc/init.d
 	oneshot
 
@@ -596,18 +571,12 @@ service media /system/bin/mediaserver
 	user media
 	group system audio camera graphics inet net_bt net_bt_admin log
 
-# To prevent lockup issue during poweron/off test
+# to prevent lockup issue during poweron/off test
 service killmediaserver /system/bin/killmediaserver
 	user media
 	group system
 	oneshot
-# To prevent lockup issue during poweron/off test
-
-service bootanim /system/bin/bootanimation
-	user graphics
-	group graphics
-#	disabled
-	oneshot
+# to prevent lockup issue during poweron/off test
 
 # to enable wifi
 service wpa_supplicant /system/bin/wpa_supplicant -Dwext -ieth0 -c/data/wifi/bcm_supp.conf
@@ -622,7 +591,7 @@ service ifcfg_eth0 /system/bin/ifconfig eth0 up
 	disabled
 	oneshot
 
-#for WiFi MFG(TestMode)
+# for WiFi MFG(TestMode)
 service mfgloader /system/bin/mfgloader
 	disabled
 	oneshot
@@ -637,7 +606,6 @@ service dbus /system/bin/dbus-daemon --system --nofork
 	user bluetooth
 	group bluetooth net_bt_admin
 
-# +++++++++++++++++++++++++++++++++++++++++++
 # for Broadcom Bluetooth
 # Start BTLD -----------------------------------------
 # init.rc does not yet support applying capabilities, so run as root and
@@ -651,8 +619,6 @@ service btld /system/bin/logwrapper /system/bin/btld -hb 3000000 -hp /dev/s3c241
 # init.rc does not yet support applying capabilities, so run as root and
 # let obexd drop uid to bluetooth with the right linux capabilities
 service obexd /system/bin/logwrapper /system/bin/obexd
-#	socket bluetooth stream 660 bluetooth bluetooth
-#	socket dbus_bluetooth stream 660 bluetooth bluetooth
 	user root
 	group bluetooth net_bt_admin
 	disabled
@@ -661,12 +627,11 @@ service obexd /system/bin/logwrapper /system/bin/obexd
 # Start BLUETOOTHD -----------------------------------------
 # init.rc does not yet support applying capabilities, so run as root and
 # let bludtoothd drop uid to bluetooth with the right linux capabilities
-service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -n -d
+service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -n -d 
 	socket bluetooth stream 660 bluetooth bluetooth
 	socket dbus_bluetooth stream 660 bluetooth bluetooth
 	group bluetooth net_bt_admin misc
 	disabled
-# +++++++++++++++++++++++++++++++++++++++++++
 
 service hfag /system/bin/sdptool add --channel=10 HFAG
 	user bluetooth
@@ -700,7 +665,6 @@ service sensor-daemon /system/bin/sensorserver_yamaha
 	user compass
 	group system log
 
-# racoon will setuid to vpn after getting necessary resources.
 service racoon /system/bin/racoon
 	socket racoon stream 600 system system
 	group net_admin keystore
@@ -745,21 +709,19 @@ chmod 555 /system/etc/mobileap/enable_ppp.sh
 chmod 555 /system/etc/mobileap/enable_eth.sh
 chmod 555 /system/etc/mobileap/initialize_nat.sh
 chmod 555 /system/etc/mobileap/tethering_enable.sh
-
 # end of Mobile AP
 
 # PC Internet Share
-
 service udhcpd /system/bin/udhcpd /data/data/com.android.samsung.IcsService/dhcp/udhcpd.conf
 	disabled
 	oneshot
 
-# configure the Iptables
+#configure the Iptables
 service pcInternet_on /system/bin/sh /data/data/com.android.samsung.IcsService/conf/iptablesConfig.sh
 	disabled
 	oneshot
 
-# flush the Iptables
+#flush the Iptables
 service pcInternet_off /system/bin/sh /data/data/com.android.samsung.IcsService/conf/iptablesFlush.sh
 	disabled
 	oneshot
@@ -780,5 +742,4 @@ on property:service.dhcp.enable=0
 on property:service.iptables.configure=0
 	chmod 777 /data/data/com.android.samsung.IcsService/conf/iptablesFlush.sh
 	start pcInternet_off
-
 # end of PCInternet share
