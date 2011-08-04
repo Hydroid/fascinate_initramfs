@@ -170,48 +170,12 @@ load_stage()
 
 detect_supported_model_and_setup_partitions()
 {
-	# read the actual partition table
-	dd if=/dev/block/mmcblk0 of=/voodoo/tmp/partition_table bs=1 skip=446 count=64
-
-	for x in /voodoo/partition_tables/* ; do
-		if cmp $x /voodoo/tmp/partition_table; then
-			model=`echo $x | /bin/cut -d \/ -f4`
-			break
-		fi
-	done
-
-	if test "$model" != ""; then
-		log "model detected: $model"
-		
-		# fascinate/mesmerize/showcase are different here
-		if test "$model" = 'fascinate' || test "$model" = 'mesmerize-showcase' || test "$model" = 'continuum'; then
-			data_partition='/dev/block/mmcblk0p1'
-			sdcard_device='/dev/block/mmcblk1p1'
-			cache_partition='/dev/block/stl11'
-		# vzw galaxytab is different here
-		elif test "$model" = 'galaxytab-vzw'; then
-			data_partition='/dev/block/mmcblk0p2'
-			sdcard_device='/dev/block/mmcblk1p1'
-			cache_partition='/dev/block/mmcblk0p1'
-		# /data on OneNAND for GalaxyS4G is different here
-		# and also no dbdata
-		elif test "$model" = 'tmo-vibrant-galaxys4g'; then
-			dbdata_partition=''
-			data_on_emmc=0
-			data_partition='/dev/block/stl10'
-			cache_partition='/dev/block/stl11'
-			sdcard_device='/dev/block/mmcblk0p1'
-		else
-		# for every other model
-			data_partition='/dev/block/mmcblk0p2'
-			sdcard_device='/dev/block/mmcblk0p1'
-			cache_partition='/dev/block/stl11'
-		fi
-		echo "data_partition='$data_partition'" >> /voodoo/configs/partitions
-		echo "cache_partition='$cache_partition'" >> /voodoo/configs/partitions
-	else
-		return 1
-	fi
+	model='fascinate'
+	data_partition='/dev/block/mmcblk0p1'
+	sdcard_device='/dev/block/mmcblk1p1'
+	cache_partition='/dev/block/stl11'
+	echo "data_partition='$data_partition'" >> /voodoo/configs/partitions
+	echo "cache_partition='$cache_partition'" >> /voodoo/configs/partitions
 }
 
 
